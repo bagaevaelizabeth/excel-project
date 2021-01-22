@@ -7,7 +7,7 @@ export class Table extends ExcelComponent {
 
   constructor($root) {
     super($root, {
-      listeners: ['mousedown', 'hover'],
+      listeners: ['mousedown'],
     });
   }
 
@@ -20,26 +20,28 @@ export class Table extends ExcelComponent {
     const $parent = $resizer.closest('[data-type="resizable"]');
     const coords = $parent.getCoords();
     const type = event.target.dataset.resize;
-    const sideProp = type === 'col' ? 'bottom' : 'right'
     let value;
 
-    $resizer.css({
-      opacity: 1,
-      [sideProp]: '-5000px'
-    });
-
+    console.log($parent)
     document.onmousemove = e => {
       if (type === 'col') {
+        console.log($resizer)
         const delta = e.pageX - coords.right;
         value = (coords.width + delta) + 'px';
         $resizer.css({
+          opacity: 1,
+          bottom: '-5000px',
           right: -delta + 'px'
         });
-      } else {
+      }
+      if (type === 'row') {
         const delta = e.pageY - coords.bottom;
         value = (coords.height + delta) + 'px';
+        console.log('row' + value);
         $resizer.css({
-          bottom: -delta + 'px',
+          opacity: 1,
+          right: '-5000px',
+          bottom: -delta + 'px'
         });
       }
 
@@ -51,15 +53,19 @@ export class Table extends ExcelComponent {
           this.$root.getAll(`[data-col="${$parent.data.col}"]`).forEach(el => {
             $(el).css({width: value})
           });
-        } else {
+          $resizer.css({
+            opacity: 0,
+            right: 0,
+            bottom: 0
+          });
+        } if (type === 'row') {
           $parent.css({height: value});
+          $resizer.css({
+            opacity: 0,
+            right: 0,
+            bottom: 0
+          });
         }
-
-        $resizer.css({
-          opacity: 0,
-          right: 0,
-          bottom: 0
-        });
       }
     }
   }
