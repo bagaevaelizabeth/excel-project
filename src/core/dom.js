@@ -82,6 +82,11 @@ class Dom {
       this.$el.style[key] = styles[key]
     })
   }
+
+  focus() {
+    this.$el.focus();
+    return this;
+  }
 }
 
 export function $(selector) {

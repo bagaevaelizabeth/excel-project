@@ -1,6 +1,10 @@
 import {ExcelComponent} from '@core/ExcelComponent';
 import {createTable} from '@/components/table/table.template';
-import {isCell, shouldResize} from '@/components/table/table.functions';
+import {
+  isCell,
+  nextSelector,
+  shouldResize,
+} from '@/components/table/table.functions';
 import {resizeHandler} from '@/components/table/table.resize';
 import {TableSelection} from '@/components/table/TableSelection';
 import {$} from '@core/dom';
@@ -11,7 +15,7 @@ export class Table extends ExcelComponent {
 
   constructor($root) {
     super($root, {
-      listeners: ['mousedown'],
+      listeners: ['mousedown', 'keydown'],
     });
   }
 
@@ -37,11 +41,31 @@ export class Table extends ExcelComponent {
       if (event.shiftKey) {
         const target = $target.id(true);
         const current = this.selection.current.id(true);
-        const $cells = matrix(target, current).map(id => this.$root.find(`[data-id="${id}"]`));
+        const $cells = matrix(target, current).
+            map(id => this.$root.find(`[data-id="${id}"]`));
         this.selection.selectGroup($cells);
       } else {
         this.selection.select($target);
       }
+    }
+  }
+
+  onKeydown(event) {
+    const keys = [
+      'Enter',
+      'Tab',
+      'ArrowLeft',
+      'ArrowDown',
+      'ArrowRight',
+      'ArrowUp'];
+
+    const {key} = event;
+
+    if (keys.includes(key) && !event.shiftKey) {
+      event.preventDefault();
+      const id = this.selection.current.id(true);
+      const $next = this.$root.find(nextSelector(key, id));
+      this.selection.select($next);
     }
   }
 }
