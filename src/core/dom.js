@@ -54,10 +54,50 @@ class Dom {
     return this.$el.querySelectorAll(selector);
   }
 
+  find(selector) {
+    return $(this.$el.querySelector(selector));
+  }
+
+  addClass(className) {
+    this.$el.classList.add(className);
+    return this;
+  }
+
+  removeClass(className) {
+    return this.$el.classList.remove(className);
+  }
+
+  id(parse) {
+    if (parse) {
+      const parsed = this.id().split(':');
+      return {
+        row: +parsed[0],
+        col: +parsed[1],
+      };
+    }
+    return this.data.id;
+  }
+
   css(styles = {}) {
     Object.keys(styles).forEach(key => {
-      this.$el.style[key] = styles[key]
-    })
+      this.$el.style[key] = styles[key];
+    });
+  }
+
+  focus() {
+    this.$el.focus();
+    return this;
+  }
+
+  text(text) {
+    if (typeof text === 'string') {
+      this.$el.textContent = text;
+      return this;
+    }
+    if (this.$el.tagName.toLowerCase() === 'input') {
+      this.$el.value.trim();
+    }
+    return this.$el.textContent.trim();
   }
 }
 
