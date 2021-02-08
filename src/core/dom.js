@@ -59,7 +59,8 @@ class Dom {
   }
 
   addClass(className) {
-    return this.$el.classList.add(className);
+    this.$el.classList.add(className);
+    return this;
   }
 
   removeClass(className) {
@@ -85,11 +86,6 @@ class Dom {
 
   focus() {
     this.$el.focus();
-    return this;
-  }
-
-  unFocus() {
-    this.$el.unFocus();
     return this;
   }
 
